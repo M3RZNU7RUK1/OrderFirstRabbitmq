@@ -6,7 +6,7 @@ from src.models.orders import Orders
 from typing import Optional
 from database import get_db
 
-class OrdersServide:
+class ItemsServide:
     def __init__(self, session: AsyncSession):
         self.session = session
 
@@ -18,15 +18,6 @@ class OrdersServide:
         res = await self.session.execute(query)
         items = res.scalars().all()
         return items
-        
-    async def create_order(self, item_id: int):
-        query = (
-            select(Orders)
-            .filter(Orders.id == item_id)
-            )
-        res = await self.session.execute(query)
-        items = res.scalars().all()
-        return items
 
-async def get_orders_service(session: AsyncSession = Depends(get_db)):
-    return OrdersServide(session)
+async def get_items_service(session: AsyncSession = Depends(get_db)):
+    return ItemsServide(session)
