@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "order"
+version = "0.1.0"
+description = ""
+authors = ["GL1KK <danya_serov05@internet.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+python-dotenv = "^1.1.1"
+fastapi = {extras = ["all"], version = "^0.115.14"}
+sqlalchemy = "^2.0.41"
+authx = "^1.4.3"
+faststream = {extras = ["rabbit"], version = "^0.5.43"}
+passlib = {extras = ["argon2"], version = "^1.7.4"}
+aiogram = "^3.20.0.post0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtualenv
+venv/
+.env/
+.venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# DB
+*.sqlite
+*.db
+
+# Logs
+*.log
+logs/
+
+# Docker
+docker-compose.override.yml
+
+# FastAPI
+/app/static/uploads/  # Если будут загрузки файлов
+
+# Alembic (миграции)
+/alembic.ini
+
+# Тестовые данные
+/test_data/
+
+# macOS
+.DS_Store
+
+# Environment files
+.env
+.env.local
+.env.*.local
