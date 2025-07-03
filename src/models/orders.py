@@ -11,7 +11,3 @@ class Orders(Base):
     created_at: Mapped[created_at]
     updated_at: Mapped[updated_at]
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
-    user = relationship(
-        "Users",
-        back_populates="orders",
-    )

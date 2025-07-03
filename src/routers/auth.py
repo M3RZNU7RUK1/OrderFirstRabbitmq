@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Response, Depends
 from src.servies.auth_service import AuthService, get_auth_service
-from schemas.users import UserResponse
+from src.schemas.users import UserResponse
 
 class AuthRouter:
     def __init__(self):

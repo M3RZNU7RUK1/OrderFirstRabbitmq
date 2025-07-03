@@ -8,10 +8,6 @@ class Users(Base):
     id: Mapped[intpk]
     username: Mapped[username_20] = mapped_column(unique=True)
     password: Mapped[str]
-    role: Mapped[str]
+    role: Mapped[str] = mapped_column(nullable=True)
     created_at: Mapped[created_at]
     updated_at: Mapped[updated_at]
-    orders = relationship(
-        "Orders",
-        back_populates="user",
-    )

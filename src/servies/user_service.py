@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from fastapi import HTTPException, Depends
-from database import get_db
+from src.database import get_db
 
 class UserService:
     def __init__(self, session: AsyncSession):
@@ -13,8 +13,7 @@ class UserService:
         try:
             query = (
                 select(Users)
-                .where(Users.id == int(user_id))
-                .options(selectinload(Users.posts))
+                .filter(Users.id == int(user_id))
             )
             
             res = await self.session.execute(query)

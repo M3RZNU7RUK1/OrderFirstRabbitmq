@@ -52,7 +52,7 @@ class AuthService:
             return {"access_token": token}
 
         except Exception as e:
-            raise HTTPException(status_code=500, detail="Authentication failed")
+            raise HTTPException(status_code=500, detail=f"Authentication failed {e}")
 
     def _set_auth_cookie(self, response: Response, token: str):
         response.set_cookie(
