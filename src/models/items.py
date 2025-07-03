@@ -2,7 +2,7 @@ from src.database import Base, intpk, created_at, updated_at
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 from sqlalchemy import ForeignKey
 
-class items(Base):
+class Items(Base):
     __tablename__ = "items"
     id: Mapped[intpk]
     title: Mapped[str]
