@@ -20,6 +20,6 @@ class Security:
         return self.__pwd_context.verify(secret=password, hash=hashed_pwd, scheme="argon2")
     def hash_password(self, password):
         return self.__pwd_context.hash(password)
-    def create_jwt(self, user_id: int):
-        token = auth.create_access_token(uid=str(user_id))
+    def create_jwt(self, user_id: int, user_role: str):
+        token = auth.create_access_token(uid=str(user_id), data={"role": user_role}) 
         return token

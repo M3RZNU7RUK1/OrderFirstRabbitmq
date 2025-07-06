@@ -1,13 +1,14 @@
 from src.database import Base, intpk, created_at, updated_at, username_20
-from sqlalchemy.orm import mapped_column, Mapped, relationship
-from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped
+from enum import Enum
+
 
 class Users(Base):
     __tablename__ = "users"
 
     id: Mapped[intpk]
-    username: Mapped[username_20] = mapped_column(unique=True)
+    username: Mapped[username_20]
     password: Mapped[str]
-    role: Mapped[str] = mapped_column(nullable=True)
+    role: Mapped[str]
     created_at: Mapped[created_at]
     updated_at: Mapped[updated_at]

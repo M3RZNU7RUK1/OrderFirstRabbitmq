@@ -18,6 +18,15 @@ class ItemsService:
         res = await self.session.execute(query)
         items = res.scalars().all()
         return items
+    
+    async def add_item(self, title: str, description: str, price: int):
+        if price <= 0:
+            raise HTTPException(status_code=..., detail="Бро у тебя проблемы с самооценкой? :/")
+        item = Items(title=title, description=description, price=price)
 
+        self.session.add(item)
+        await self.session.commit()
+        await self.session.refresh(item)
+        return item
 async def get_items_service(session: AsyncSession = Depends(get_db)):
     return ItemsService(session)

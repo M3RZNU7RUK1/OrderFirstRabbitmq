@@ -15,12 +15,12 @@ class AuthService:
         try:
 
             existing_user = await self.session.execute(
-                select(Users).where(Users.username == username))
+                select(Users).filter(Users.username == username))
             if existing_user.scalar_one_or_none():
                 raise HTTPException(status_code=409, detail="Username not available")
             
             hashed_password = self.security.hash_password(password)
-            user = Users(username=username, password=hashed_password)
+            user = Users(username=username, password=hashed_password, role="user")
             
             self.session.add(user)
             await self.session.commit()
@@ -46,7 +46,7 @@ class AuthService:
             if not self.security.verify_password(user.password, password):
                 raise HTTPException(status_code=401, detail="Invalid credentials")
     
-            token = self.security.create_jwt(user.id)
+            token = self.security.create_jwt(user_id=user.id, user_role=user.role)
             self._set_auth_cookie(response, token)
             
             return {"access_token": token}
