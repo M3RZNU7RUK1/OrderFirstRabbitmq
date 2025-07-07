@@ -6,14 +6,14 @@ from src.models.orders import Orders
 from typing import Optional
 from database import get_db
 
-class OrdersServide:
+class OrdersService:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def find_items(self, title: str):
+    async def find_order(self, title: str, user_id: int):
         query = (
             select(Orders)
-            .filter(Orders.title.contains(title))
+            .filter(Orders.title.contains(title), Orders.user_id == user_id)
             )
         res = await self.session.execute(query)
         items = res.scalars().all()
@@ -29,4 +29,4 @@ class OrdersServide:
         return items
 
 async def get_orders_service(session: AsyncSession = Depends(get_db)):
-    return OrdersServide(session)
+    return OrdersService(session)
