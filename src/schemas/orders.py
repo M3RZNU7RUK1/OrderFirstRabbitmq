@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional
+
 
 class OrderResponse(BaseModel):
     id: int
@@ -12,9 +12,3 @@ class OrderResponse(BaseModel):
     class Config:
         from_attributes = True
 
-class OrderUpdate(BaseModel):
-    title: Optional[str] = None
-    data: Optional[str] = None
-
-    class Config:
-        from_attributes = True

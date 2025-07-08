@@ -15,11 +15,11 @@ class UserService:
         self.session = session
         self.security = Security()
 
-    async def get_profile(self, user_id: str):
+    async def get_profile(self, user_id: int):
         try:
             query = (
                 select(Users)
-                .filter(Users.id == int(user_id))
+                .filter(Users.id == user_id)
             )
             
             res = await self.session.execute(query)

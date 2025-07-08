@@ -11,6 +11,8 @@ class UserRouter:
     def _setup_routers(self):
         self.router.get("/me", response_model=UserResponse)(self.profile)
     
-    async def profile(self, user_id: str = Depends(auth.access_token_required), user_service: UserService = Depends(get_user_service)):
-        user = await user_service.get_profile(user_id=user_id.sub)
+    async def profile(self, 
+                      token: str = Depends(auth.access_token_required), 
+                      user_service: UserService = Depends(get_user_service)):
+        user = await user_service.get_profile(user_id=int(token.sub))
         return user

@@ -3,6 +3,7 @@ from src.create_db import create_db
 from src.routers.users import UserRouter
 from src.routers.auth import AuthRouter
 from src.routers.items import ItemRouter
+from src.routers.orders import OrderRourer 
 from src.servies.user_service import UserService  
 from contextlib import asynccontextmanager 
 from src.database import session 
@@ -20,7 +21,9 @@ app = FastAPI(lifespan=lifespan)
 user_router = UserRouter()
 auth_router = AuthRouter()
 item_router = ItemRouter()
+order_router = OrderRourer()
 
 app.include_router(user_router.router)
 app.include_router(auth_router.router)
 app.include_router(item_router.router)
+app.include_router(order_router.router)

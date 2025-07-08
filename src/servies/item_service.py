@@ -15,15 +15,8 @@ class ItemsService:
             )
         res = await self.session.execute(query)
         items = res.scalars().all()
-        return items        
-    async def create_order(self, item_id: int):
-        query = (
-            select(Orders)
-            .filter(Orders.id == item_id)
-            )
-        res = await self.session.execute(query)
-        items = res.scalars().all()
         return items
+    
     async def add_item(self, title: str, description: str, price: int):
         item = Items(title=title, description=description, price=price)
 
@@ -31,10 +24,10 @@ class ItemsService:
         await self.session.commit()
         await self.session.refresh(item)
         return item
-    async def del_item(self, id):
+    async def del_item(self, item_id: int):
         query = (
             select(Items)
-            .filter(Items.id == id)
+            .filter(Items.id == item_id)
         )
         res = await self.session.execute(query)
         item = res.scalar_one_or_none()
