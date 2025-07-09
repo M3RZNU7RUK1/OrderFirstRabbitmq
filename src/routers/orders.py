@@ -1,11 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException  
+from fastapi import Depends, HTTPException  
 from src.servies.order_service import OrdersService, get_orders_service 
 from src.utils.security import auth
 from src.schemas.orders import OrderResponse
+from faststream.rabbit.fastapi import RabbitRouter
 
 class OrderRourer:
     def __init__(self):
-        self.router = APIRouter(tags=["Orders"])
+        self.router = RabbitRouter(tags=["Orders"])
         self._setup_routers()
         
     def _setup_routers(self):
@@ -16,12 +17,16 @@ class OrderRourer:
     async def find_orders(self, title: str
                           , token: str = Depends(auth.access_token_required),
                           order_service: OrdersService = Depends(get_orders_service)):
-        orders = await order_service.find_order(title=title)
+        orders = await order_service.find_order(title=title, user_id=int(token.sub))
         return orders
     async def create_order(self, item_id: int, 
                         token: str = Depends(auth.access_token_required),
                         order_service: OrdersService = Depends(get_orders_service)):
         order = await order_service.create_order(item_id=item_id, user_id=int(token.sub))
+        await self.router.broker.publish(
+            f"Новый заказ! {order}",
+            queue="orders"
+        )
         return order
     async def del_order(self, order_id: int,
                         token: str = Depends(auth.access_token_required),

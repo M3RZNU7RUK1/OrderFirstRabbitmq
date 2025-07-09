@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str
     USERNAME_ADMIN: str
     PASSWORD_ADMIN: str
+    TOKEN: str
 
     @property
     def DATABASE_URL(self) -> str:

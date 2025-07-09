@@ -12,10 +12,10 @@ class OrdersService:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def find_order(self, title: str):
+    async def find_order(self, title: str, user_id: int):
         query = (
             select(Orders)
-            .filter(Orders.title == title)
+            .filter(Orders.title == title, Orders.user_id == user_id)
             )
         res = await self.session.execute(query)
         items = res.scalars().all()

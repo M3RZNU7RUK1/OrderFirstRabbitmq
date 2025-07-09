@@ -7,6 +7,7 @@ class OrderResponse(BaseModel):
     title: str
     description: str
     price: int
+    user_id: int
     created_at: datetime
     updated_at: datetime
     class Config:
