@@ -7,6 +7,7 @@ from src.models.items import Items
 from typing import Optional
 from src.database import get_db
 import random 
+from src.schemas.orders import OrderResponse
 
 class OrdersService:
     def __init__(self, session: AsyncSession):
@@ -37,7 +38,15 @@ class OrdersService:
         self.session.add(order)
         await self.session.commit()
         await self.session.refresh(order)
-        return order
+        return OrderResponse(
+            id=order.id,
+            title=order.title,
+            description=order.description,
+            price=order.price,
+            user_id=order.user_id,
+            created_at=order.created_at,
+            updated_at=order.updated_at
+        )
     
     async def del_order(self, order_id: int, user_id: int):
         query = (

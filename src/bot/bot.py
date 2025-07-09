@@ -5,6 +5,8 @@ from faststream.rabbit.fastapi import RabbitBroker
 import asyncio 
 import logging 
 import os
+import json
+from src.schemas.orders import OrderResponse 
 
 load_dotenv()
 
@@ -17,11 +19,23 @@ bot = Bot(token=TOKEN)
 broker = RabbitBroker()
 
 @broker.subscriber("orders")
-async def handle_orders(data: str):
+async def handle_orders(order_data: dict):  # принимаем как словарь, а не строку
+    message = (
+        "🛒 *Новый заказ!*\n\n"
+        f"📌 *Номер заказа:* {order_data['id']}\n"
+        f"📋 *Название:* {order_data['title']}\n"
+        f"💰 *Цена:* {order_data['price']} руб.\n"
+        f"⏰ *Время доставки:* {order_data['description']}\n"
+        f"👤 *ID пользователя:* {order_data['user_id']}\n"
+        f"📅 *Дата создания:* {order_data['created_at']}"
+    )
+    
     await bot.send_message(
         chat_id=1965822435,
-        text=data,
+        text=message,
+        parse_mode="Markdown"  # для красивого форматирования
     )
+
 
 async def main():
     async with broker as br:
