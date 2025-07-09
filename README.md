@@ -40,7 +40,7 @@ FastAPI application for order management with JWT authentication, admin panel an
 Clone repository and enter directory:
 ```bash
 git clone https://github.com/GL1KK/OrderFirstRabbitmq.git
-cd OrderFirstRabbitmqr
+cd OrderFirstRabbitmq
 ```
 Create and configure .env file:
 
