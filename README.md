@@ -79,6 +79,10 @@ Start the FastAPI server:
 ```bash
 uvicorn src.main:app --reload
 ```
+Start telegram-bot:
+```bash
+poetry run python -m src.bot.bot
+```
 ### Authentication
 - `POST /register` - User registration
 - `POST /login` - User login
