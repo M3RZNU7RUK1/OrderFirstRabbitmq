@@ -71,7 +71,6 @@ docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.10.7-manage
 poetry install
 poetry env activate
 example: /home/daniil/.cache/pypoetry/virtualenvs/order-yRxfHGHV-py3.13/bin/activate
-## API Endpoints
 ```
 Running the Application
 
