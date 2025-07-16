@@ -19,7 +19,7 @@ bot = Bot(token=TOKEN)
 broker = RabbitBroker()
 
 @broker.subscriber("orders")
-async def handle_orders(order_data: dict):  # принимаем как словарь, а не строку
+async def handle_orders(order_data: dict):
     message = (
         "🛒 *Новый заказ!*\n\n"
         f"📌 *Номер заказа:* {order_data['id']}\n"
@@ -33,7 +33,7 @@ async def handle_orders(order_data: dict):  # принимаем как слов
     await bot.send_message(
         chat_id=1965822435,
         text=message,
-        parse_mode="Markdown"  # для красивого форматирования
+        parse_mode="Markdown"
     )
 
 

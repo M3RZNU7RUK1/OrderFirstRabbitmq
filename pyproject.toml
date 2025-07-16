@@ -15,6 +15,7 @@ faststream = {extras = ["rabbit"], version = "^0.5.43"}
 passlib = {extras = ["argon2"], version = "^1.7.4"}
 aiogram = "^3.20.0.post0"
 asyncpg = "^0.30.0"
+redis = {extras = ["asyncio"], version = "^6.2.0"}
 
 
 [build-system]

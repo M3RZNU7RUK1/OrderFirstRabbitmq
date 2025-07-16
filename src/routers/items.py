@@ -17,6 +17,7 @@ class ItemRouter:
         return True if role == "admin" else False 
         
     async def find_item(self, title: str, item_service: ItemsService = Depends(get_items_service)):
+        
         items = await item_service.find_items(title=title)
         return items
         
@@ -43,7 +44,7 @@ class ItemRouter:
         item_service: ItemsService = Depends(get_items_service)
     ):
         if self._check_admin(role=token.role):
-            await item_service.del_item(id=id)
+            await item_service.del_item(item_id=id)
             return {"message": "deleted"}
         else:
              raise HTTPException(status_code=400, detail="Бро ты не админ что бы такое вытворять :-0")

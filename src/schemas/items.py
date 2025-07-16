@@ -1,10 +1,10 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from datetime import datetime
 
 class ItemResponse(BaseModel):
     id: int
     title: str
     description: str
-    price: int = Field(ge=1, description="Цена должна быть ≥ 1")
+    price: int
     created_at: datetime
     updated_at: datetime
