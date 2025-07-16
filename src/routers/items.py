@@ -2,10 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from src.servies.item_service import ItemsService, get_items_service
 from src.schemas.items import ItemResponse
 from src.utils.security import auth
+from src.redisclient.cache import Cache 
 
 class ItemRouter:
     def __init__(self):
         self.router = APIRouter(tags=["Items"])
+        self.cache = Cache()
         self._setup_routers()
         
     def _setup_routers(self):
@@ -17,10 +19,14 @@ class ItemRouter:
         return True if role == "admin" else False 
         
     async def find_item(self, title: str, item_service: ItemsService = Depends(get_items_service)):
-        
+        cached_item = await self.cache.get_cached_item_data(key=title)
+        if cached_item:
+            return cached_item
         items = await item_service.find_items(title=title)
-        return items
-        
+        items_response = [ItemResponse.model_validate(item) for item in items]
+        await self.cache.set_cached_item_data(key=title, value=items_response)
+        return items_response
+
     async def add_item(
         self, 
         title: str, 
@@ -33,6 +39,8 @@ class ItemRouter:
             if price <= 0 or price >= 2147483647:
                 raise HTTPException(status_code=400, detail="Бро у тебя проблемы с самооценкой:0")
             item = await item_service.add_item(title=title, description=description, price=price)
+            item_response = [ItemResponse.model_validate(item)]
+            await self.cache.set_cached_item_data(key=title, value=item_response)            
             return item
         else:
             raise HTTPException(status_code=400, detail="Бро ты не админ что бы такое вытворять :-0")

@@ -24,7 +24,6 @@ class OrderRourer:
                         order_service: OrdersService = Depends(get_orders_service)):
         order = await order_service.create_order(item_id=item_id, user_id=int(token.sub))
         
-        # Преобразуем объект order в словарь перед отправкой
         order_dict = {
             "id": order.id,
             "title": order.title,
@@ -34,9 +33,9 @@ class OrderRourer:
             "created_at": order.created_at,
             "updated_at": order.updated_at
         }
-        
+
         await self.router.broker.publish(
-            order_dict,  # отправляем словарь, а не строку
+            order_dict,             
             queue="orders"
         )
         return order

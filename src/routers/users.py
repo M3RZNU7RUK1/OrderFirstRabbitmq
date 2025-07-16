@@ -21,5 +21,5 @@ class UserRouter:
             return cached_user
         
         user = await user_service.get_profile(user_id=int(token.sub))
-        await self.cache.set_cached_profile_data(key=token.sub, value=UserResponse.from_orm(user))
+        await self.cache.set_cached_profile_data(key=token.sub, value=UserResponse.model_validate(user))
         return user
