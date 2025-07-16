@@ -6,5 +6,6 @@ class UserResponse(BaseModel):
     username: str
     role: str
     created_at: datetime
-    updated_at: datetime
-    
+    updated_at: datetime 
+    class Config:
+        from_attributes = True 
