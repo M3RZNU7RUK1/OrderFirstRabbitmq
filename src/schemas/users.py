@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -7,5 +8,6 @@ class UserResponse(BaseModel):
     role: str
     created_at: datetime
     updated_at: datetime 
+    orders: list[OrderResponse] | None 
     class Config:
         from_attributes = True 

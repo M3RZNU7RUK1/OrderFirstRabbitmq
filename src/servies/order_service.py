@@ -22,7 +22,7 @@ class OrdersService:
             raise HTTPException(status_code=404, detail="Нету такого :)")
         return items
         
-    async def create_order(self, item_id: int, user_id: int):
+    async def create_order(self, item_id: int, user_id: int, phone_number: str):
         query = (
             select(Items)
             .filter(Items.id == item_id)
@@ -31,15 +31,13 @@ class OrdersService:
         item = res.scalar_one_or_none() 
         if not item:
             raise HTTPException(status_code=404, detail="Нету такого :)")
-        delivery_time = f"Заказ будет доставлен в: {random.randint(1, 12)}:{random.randint(0, 59):02d}{random.choice(['am', 'pm'])}"
-        order = Orders(title=item.title, description=delivery_time, price=item.price, user_id=user_id)
+        order = Orders(title=item.title ,price=item.price, user_id=user_id)
         self.session.add(order)
         await self.session.commit()
         await self.session.refresh(order)
         return OrderResponse(
             id=order.id,
             title=order.title,
-            description=order.description,
             price=order.price,
             user_id=order.user_id,
             created_at=order.created_at,

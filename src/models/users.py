@@ -1,6 +1,5 @@
 from src.database import Base, intpk, created_at, updated_at, username_20
-from sqlalchemy.orm import Mapped
-
+from sqlalchemy.orm import Mapped, relationship 
 
 class Users(Base):
     __tablename__ = "users"
@@ -11,3 +10,9 @@ class Users(Base):
     role: Mapped[str]
     created_at: Mapped[created_at]
     updated_at: Mapped[updated_at]
+
+    orders: Mapped[list["Orders"]] = relationship(
+        back_populates="user"
+    )
+
+    
