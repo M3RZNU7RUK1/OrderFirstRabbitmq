@@ -11,7 +11,7 @@ class AuthService:
         self.session = session
         self.security = Security()
 
-    async def register_user(self, username: str, password: str):
+    async def register_user(self, username: str, password: str, phone_number: str):
         try:
 
             existing_user = await self.session.execute(
@@ -20,7 +20,10 @@ class AuthService:
                 raise HTTPException(status_code=409, detail="Username not available")
             
             hashed_password = self.security.hash_password(password)
-            user = Users(username=username, password=hashed_password, role="user")
+            user = Users(username=username, 
+                         password=hashed_password, 
+                         phone_number=phone_number,
+                         role="user")
             
             self.session.add(user)
             await self.session.commit()
@@ -34,11 +37,14 @@ class AuthService:
                 raise HTTPException(status_code=400, detail="Username too long")
             raise HTTPException(status_code=500, detail="Database error")
 
-    async def login_user(self, username: str, password: str, response: Response):
+    async def login_user(self, username: str, password: str, phone_number: str, response: Response):
         try:
-            result = await self.session.execute(
-                select(Users).where(Users.username == username))
-            user = result.scalar_one_or_none()
+            query = (
+                select(Users)
+                .filter(Users.username == username, Users.phone_number == phone_number)
+            )
+            res = await self.session.execute(query)
+            user = res.scalar_one_or_none()
 
             if not user:
                 raise HTTPException(status_code=401, detail="Invalid credentials")

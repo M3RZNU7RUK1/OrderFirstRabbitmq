@@ -7,6 +7,7 @@ class Users(Base):
     id: Mapped[intpk]
     username: Mapped[username_20]
     password: Mapped[str]
+    phone_number: Mapped[str]
     role: Mapped[str]
     created_at: Mapped[created_at]
     updated_at: Mapped[updated_at]
