@@ -1,10 +1,8 @@
-from sqlalchemy.exc import IntegrityError, DBAPIError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, Depends
 from src.models.orders import Orders
 from src.models.items import Items 
-from typing import Optional
 from src.database import get_db
 import random 
 from src.schemas.orders import OrderResponse

@@ -1,6 +1,5 @@
 from src.database import Base, intpk, created_at, updated_at, username_20
 from sqlalchemy.orm import Mapped
-from enum import Enum
 
 
 class Users(Base):
