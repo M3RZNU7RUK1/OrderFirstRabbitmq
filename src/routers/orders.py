@@ -33,11 +33,10 @@ class OrderRourer:
         order_dict = {
             "id": order.id,
             "title": order.title,
-            "description": order.description,
             "price": order.price,
-            "user_id": order.user_id,
             "created_at": order.created_at,
-            "updated_at": order.updated_at
+            "updated_at": order.updated_at,
+            "phone_number": order.user.phone_number,
         }
 
         await self.router.broker.publish(

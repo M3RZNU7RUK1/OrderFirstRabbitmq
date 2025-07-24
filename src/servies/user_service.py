@@ -38,7 +38,8 @@ class UserService:
     async def add_admin(self):
         admin = Users(username=os.getenv("USERNAME_ADMIN"), 
                       password=self.security.hash_password(os.getenv("PASSWORD_ADMIN")),
-                      role="admin")
+                      role="admin",
+                      phone_number="+79065096909")
         self.session.add(admin)
         await self.session.commit()
         
