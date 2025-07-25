@@ -4,7 +4,7 @@ from sqlalchemy import ForeignKey
 
 class Orders(Base):
     __tablename__ = "orders"
-    id: Mapped[intpk]
+    id: Mapped[intpk] 
     title: Mapped[str]
     price: Mapped[int]
     created_at: Mapped[created_at]

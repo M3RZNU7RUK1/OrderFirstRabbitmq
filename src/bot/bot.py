@@ -1,12 +1,8 @@
 from aiogram import Dispatcher, Bot
-from aiogram.types import Message
 from dotenv import load_dotenv 
 from faststream.rabbit.fastapi import RabbitBroker 
 import asyncio 
-import logging 
 import os
-import json
-from src.schemas.orders import OrderResponse 
 
 load_dotenv()
 
@@ -25,8 +21,7 @@ async def handle_orders(order_data: dict):
         f"📌 *Номер заказа:* {order_data['id']}\n"
         f"📋 *Название:* {order_data['title']}\n"
         f"💰 *Цена:* {order_data['price']} руб.\n"
-        f"⏰ *Время доставки:* {order_data['description']}\n"
-        f"👤 *ID пользователя:* {order_data['user_id']}\n"
+        f"⏰ *Номер телефона:* {order_data['phone_number']}\n"
         f"📅 *Дата создания:* {order_data['created_at']}"
     )
     

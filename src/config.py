@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str
     USERNAME_ADMIN: str
     PASSWORD_ADMIN: str
+    PHONE_NUMBER_ADMIN: str
     TOKEN: str
     REDIS_HOST: str
     REDIS_PORT: int

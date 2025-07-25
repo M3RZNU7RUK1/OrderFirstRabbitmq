@@ -13,7 +13,8 @@ class Users(Base):
     updated_at: Mapped[updated_at]
 
     orders: Mapped[list["Orders"]] = relationship(
-        back_populates="user"
+        back_populates="user",
+        lazy="selectin"
     )
 
     

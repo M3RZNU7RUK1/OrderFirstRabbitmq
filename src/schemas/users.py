@@ -1,14 +1,14 @@
 from pydantic import BaseModel
 from datetime import datetime
 
-class UserResponse(BaseModel):
+class UserResponseReg(BaseModel):
     id: int
     username: str
     role: str
     created_at: datetime
     updated_at: datetime 
-    orders: list["OrderResponse"] | None 
     class Config:
         from_attributes = True 
 
-
+class UserResponse(UserResponseReg):
+    orders: list["OrderResponse"] | None

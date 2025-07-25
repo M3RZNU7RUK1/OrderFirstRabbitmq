@@ -19,6 +19,7 @@ class UserService:
         try:
             query = (
                 select(Users)
+                .options(selectinload(Users.orders))
                 .filter(Users.id == user_id)
             )
             
@@ -27,7 +28,7 @@ class UserService:
             
             if not user:
                 raise HTTPException(status_code=404, detail="User not found")
-                
+ 
             return user
             
         except ValueError:
@@ -39,7 +40,7 @@ class UserService:
         admin = Users(username=os.getenv("USERNAME_ADMIN"), 
                       password=self.security.hash_password(os.getenv("PASSWORD_ADMIN")),
                       role="admin",
-                      phone_number="+79065096909")
+                      phone_number=os.getenv("PHONE_NUMBER_ADMIN"))
         self.session.add(admin)
         await self.session.commit()
         

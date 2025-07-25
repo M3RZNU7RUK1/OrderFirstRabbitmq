@@ -5,6 +5,7 @@ from fastapi import HTTPException, Response, Depends
 from src.models.users import Users
 from src.utils.security import Security
 from src.database import get_db
+from uuid import uuid4
 
 class AuthService:
     def __init__(self, session: AsyncSession):
@@ -27,9 +28,8 @@ class AuthService:
             
             self.session.add(user)
             await self.session.commit()
-            await self.session.refresh(user)
             
-            return user
+            return "Okey!"
 
         except DBAPIError as e:
             await self.session.rollback()

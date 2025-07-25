@@ -32,7 +32,7 @@ class ItemsService:
         res = await self.session.execute(query)
         item = res.scalar_one_or_none()
         if not item:
-            raise HTTPException(status_code=404, detail="Нету такого :)")
+            raise HTTPException(status_code=404, detail="Not found")
         await self.session.delete(item)
         await self.session.commit()
 async def get_items_service(session: AsyncSession = Depends(get_db)):

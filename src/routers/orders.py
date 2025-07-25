@@ -1,9 +1,10 @@
-from fastapi import Depends, HTTPException  
+from fastapi import Depends 
 from src.servies.order_service import OrdersService, get_orders_service 
 from src.utils.security import auth
 from src.schemas.orders import OrderResponse
 from faststream.rabbit.fastapi import RabbitRouter
 from src.redisclient.cache import Cache 
+from src.servies.user_service import UserService, get_user_service 
 class OrderRourer:
     def __init__(self):
         self.router = RabbitRouter(tags=["Orders"])
@@ -27,18 +28,18 @@ class OrderRourer:
         return orders_response 
     async def create_order(self, item_id: int, 
                         token: str = Depends(auth.access_token_required),
-                        order_service: OrdersService = Depends(get_orders_service)):
+                        order_service: OrdersService = Depends(get_orders_service),
+                           user_service: UserService = Depends(get_user_service)):
         order = await order_service.create_order(item_id=item_id, user_id=int(token.sub))
         await self.cache.set_cached_order_data(key=order.title, value=[OrderResponse.model_validate(order)])
+        user = await user_service.get_profile(user_id=int(token.sub))
         order_dict = {
             "id": order.id,
             "title": order.title,
             "price": order.price,
-            "created_at": order.created_at,
-            "updated_at": order.updated_at,
-            "phone_number": order.user.phone_number,
+            "created_at": order.created_at.strftime("%d/%m/%Y, %H:%M"),
+            "phone_number": user.phone_number
         }
-
         await self.router.broker.publish(
             order_dict,             
             queue="orders"
