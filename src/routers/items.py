@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException  
 from src.servies.item_service import ItemsService, get_items_service
-from src.schemas.items import ItemResponse
+from src.schemas.items import ItemResponse, NewItem
 from src.utils.security import auth
 from src.redisclient.cache import Cache 
 
@@ -29,21 +29,17 @@ class ItemRouter:
 
     async def add_item(
         self, 
-        title: str, 
-        description: str, 
-        price: int, 
+        item_data: NewItem,
         token: str = Depends(auth.access_token_required),
         item_service: ItemsService = Depends(get_items_service)
     ):
         if self._check_admin(role=token.role):
-            if price <= 0 or price >= 2147483647:
-                raise HTTPException(status_code=400, detail="Not enough access rights")
-            item = await item_service.add_item(title=title, description=description, price=price)
+            item = await item_service.add_item(title=item_data.title, description=item_data.description, price=item_data.price)
             item_response = [ItemResponse.model_validate(item)]
-            await self.cache.set_cached_item_data(key=title, value=item_response)            
+            await self.cache.set_cached_item_data(key=item_data.title, value=item_response)            
             return item
         else:
-            raise HTTPException(status_code=400, detail="Not enough access rights")
+            raise HTTPException(status_code=403, detail="Not enough access rights")
 
     async def del_item(
         self, 
@@ -55,4 +51,4 @@ class ItemRouter:
             await item_service.del_item(item_id=id)
             return {"message": "deleted"}
         else:
-             raise HTTPException(status_code=400, detail="Not enough access rights")
+             raise HTTPException(status_code=403, detail="Not enough access rights")

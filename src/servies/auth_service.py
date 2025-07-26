@@ -5,7 +5,6 @@ from fastapi import HTTPException, Response, Depends
 from src.models.users import Users
 from src.utils.security import Security
 from src.database import get_db
-from uuid import uuid4
 
 class AuthService:
     def __init__(self, session: AsyncSession):
@@ -13,52 +12,42 @@ class AuthService:
         self.security = Security()
 
     async def register_user(self, username: str, password: str, phone_number: str):
-        try:
-
-            existing_user = await self.session.execute(
-                select(Users).filter(Users.username == username))
-            if existing_user.scalar_one_or_none():
-                raise HTTPException(status_code=409, detail="Username not available")
+    
+        existing_user = await self.session.execute(
+            select(Users).filter(Users.username == username))
+        if existing_user.scalar_one_or_none():
+            raise HTTPException(status_code=409, detail="Username not available")
             
-            hashed_password = self.security.hash_password(password)
-            user = Users(username=username, 
-                         password=hashed_password, 
-                         phone_number=phone_number,
-                         role="user")
+        hashed_password = self.security.hash_password(password)
+        user = Users(username=username, 
+                    password=hashed_password, 
+                    phone_number=phone_number,
+                    role="user")
             
-            self.session.add(user)
-            await self.session.commit()
+        self.session.add(user)
+        await self.session.commit()
             
-            return "Okey!"
-
-        except DBAPIError as e:
-            await self.session.rollback()
-            if "value too long" in str(e).lower():
-                raise HTTPException(status_code=400, detail="Username too long")
-            raise HTTPException(status_code=500, detail="Database error")
+        return "Okey!"
 
     async def login_user(self, username: str, password: str, phone_number: str, response: Response):
-        try:
-            query = (
-                select(Users)
-                .filter(Users.username == username, Users.phone_number == phone_number)
-            )
-            res = await self.session.execute(query)
-            user = res.scalar_one_or_none()
+        query = (
+            select(Users)
+            .filter(Users.username == username, Users.phone_number == phone_number)
+        )
+        res = await self.session.execute(query)
+        user = res.scalar_one_or_none()
 
-            if not user:
-                raise HTTPException(status_code=401, detail="Invalid credentials")
+        if not user:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
             
-            if not self.security.verify_password(user.password, password):
-                raise HTTPException(status_code=401, detail="Invalid credentials")
-    
-            token = self.security.create_jwt(user_id=user.id, user_role=user.role)
-            self._set_auth_cookie(response, token)
-            
-            return {"access_token": token}
+        if not self.security.verify_password(user.password, password):
+            raise HTTPException(status_code=401, detail="Invalid credentials")
 
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Authentication failed {e}")
+        token = self.security.create_jwt(user_id=user.id, user_role=user.role)
+        self._set_auth_cookie(response, token)
+            
+        return {"access_token": token}
+
 
     def _set_auth_cookie(self, response: Response, token: str):
         response.set_cookie(

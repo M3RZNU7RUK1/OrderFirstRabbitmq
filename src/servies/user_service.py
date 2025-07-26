@@ -16,25 +16,19 @@ class UserService:
         self.security = Security()
 
     async def get_profile(self, user_id: int):
-        try:
-            query = (
-                select(Users)
-                .options(selectinload(Users.orders))
-                .filter(Users.id == user_id)
-            )
+        query = (
+            select(Users)
+            .options(selectinload(Users.orders))
+            .filter(Users.id == user_id)
+        )
             
-            res = await self.session.execute(query)
-            user = res.scalar_one_or_none()
+        res = await self.session.execute(query)
+        user = res.scalar_one_or_none()
             
-            if not user:
-                raise HTTPException(status_code=404, detail="User not found")
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
  
-            return user
-            
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Invalid user ID format")
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+        return user
 
     async def add_admin(self):
         admin = Users(username=os.getenv("USERNAME_ADMIN"), 

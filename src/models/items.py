@@ -4,9 +4,6 @@ from sqlalchemy import CheckConstraint
 
 class Items(Base):
     __tablename__ = "items"
-    __table_args__ = (
-        CheckConstraint("price >= 1", name="check_price_positive"),
-    )
 
     id: Mapped[intpk]
     title: Mapped[str]

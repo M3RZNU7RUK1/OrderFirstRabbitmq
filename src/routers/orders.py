@@ -29,7 +29,7 @@ class OrderRourer:
     async def create_order(self, item_id: int, 
                         token: str = Depends(auth.access_token_required),
                         order_service: OrdersService = Depends(get_orders_service),
-                           user_service: UserService = Depends(get_user_service)):
+                        user_service: UserService = Depends(get_user_service)):
         order = await order_service.create_order(item_id=item_id, user_id=int(token.sub))
         await self.cache.set_cached_order_data(key=order.title, value=[OrderResponse.model_validate(order)])
         user = await user_service.get_profile(user_id=int(token.sub))
