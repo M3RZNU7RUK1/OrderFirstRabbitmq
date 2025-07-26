@@ -16,10 +16,10 @@ class OrdersService:
             .filter(Orders.title == title, Orders.user_id == user_id)
             )
         res = await self.session.execute(query)
-        items = res.scalars().all()
-        if items == []:
+        orders = res.scalars().all()
+        if orders == []:
             raise HTTPException(status_code=404, detail="Not found")
-        return items
+        return orders
         
     async def create_order(self, item_id: int,user_id: int):
         query = (

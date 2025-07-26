@@ -12,7 +12,6 @@ class AuthService:
         self.security = Security()
 
     async def register_user(self, username: str, password: str, phone_number: str):
-    
         existing_user = await self.session.execute(
             select(Users).filter(Users.username == username))
         if existing_user.scalar_one_or_none():
@@ -38,10 +37,12 @@ class AuthService:
         user = res.scalar_one_or_none()
 
         if not user:
-            raise HTTPException(status_code=401, detail="Invalid credentials")
+            raise HTTPException(status_code=401, detail="Invalid credentials(username or phone_number)")
             
         if not self.security.verify_password(user.password, password):
-            raise HTTPException(status_code=401, detail="Invalid credentials")
+            raise HTTPException(status_code=401, detail="Invalid credentials(password)")
+
+        
 
         token = self.security.create_jwt(user_id=user.id, user_role=user.role)
         self._set_auth_cookie(response, token)
