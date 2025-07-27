@@ -3,10 +3,17 @@ from src.servies.order_service import OrdersService, get_orders_service
 from src.utils.security import auth
 from src.schemas.orders import OrderResponse
 from faststream.rabbit.fastapi import RabbitRouter
-from src.servies.user_service import UserService, get_user_service 
+from src.servies.user_service import UserService, get_user_service
+from src.utils.security import Security
+from dotenv import load_dotenv
+import os 
+
+load_dotenv()
+
 class OrderRourer:
     def __init__(self):
         self.router = RabbitRouter(tags=["Orders"])
+        self.security = Security
         self._setup_routers()
         
     def _setup_routers(self):
@@ -25,12 +32,18 @@ class OrderRourer:
                         user_service: UserService = Depends(get_user_service)):
         order = await order_service.create_order(item_id=item_id, user_id=int(token.sub))
         user = await user_service.get_profile(user_id=int(token.sub))
+        try:
+            # Правильный вызов decrypt
+            phone_number = self.security.decrypt(user.phone_number[2:-1].encode())
+        except Exception as e:
+            phone_number = "[encrypted]":
+
         order_dict = {
             "id": order.id,
             "title": order.title,
             "price": order.price,
             "created_at": order.created_at.strftime("%d/%m/%Y, %H:%M"),
-            "phone_number": user.phone_number
+            "phone_number": phone_number
         }
         await self.router.broker.publish(
             order_dict,             

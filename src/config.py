@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     REDIS_PORT: int
     REDIS_PASSWORD: str
     REDIS_DB: int
+    ENCRYPTION_KEY: str
     @property
     def DATABASE_URL(self) -> str:
         return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"

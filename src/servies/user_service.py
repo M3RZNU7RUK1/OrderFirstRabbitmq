@@ -34,7 +34,7 @@ class UserService:
         admin = Users(username=os.getenv("USERNAME_ADMIN"), 
                       password=self.security.hash_password(os.getenv("PASSWORD_ADMIN")),
                       role="admin",
-                      phone_number=os.getenv("PHONE_NUMBER_ADMIN"))
+                      phone_number=str(self.security.encrypt(os.getenv("PHONE_NUMBER_ADMIN"))))
         self.session.add(admin)
         await self.session.commit()
         

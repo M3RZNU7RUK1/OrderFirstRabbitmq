@@ -11,7 +11,6 @@ from src.database import session
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await create_db()
-    
     async with session() as sn:
         user_service = UserService(sn)
         await user_service.add_admin()

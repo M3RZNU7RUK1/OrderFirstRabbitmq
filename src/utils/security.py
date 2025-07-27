@@ -2,6 +2,7 @@ from passlib.context import CryptContext
 from dotenv import load_dotenv
 import os
 from authx import AuthXConfig, AuthX
+from cryptography.fernet import Fernet
 
 load_dotenv()
 
@@ -16,6 +17,12 @@ auth = AuthX(config=config)
 class Security:
     def __init__(self):
         self.__pwd_context = CryptContext(schemes=["argon2"])
+        self.cipher = Fernet(str(os.getenv("ENCRYPTION_KEY")))
+
+    def encrypt(self, data: str) -> bytes:
+        return self.cipher.encrypt(data.encode())
+    def decrypt(self, token: bytes) -> str:
+        return self.cipher.decrypt(token).decode()
     def verify_password(self,hashed_pwd, password):
         return self.__pwd_context.verify(secret=password, hash=hashed_pwd, scheme="argon2")
     def hash_password(self, password):

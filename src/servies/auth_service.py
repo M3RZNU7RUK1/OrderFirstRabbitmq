@@ -19,30 +19,30 @@ class AuthService:
         hashed_password = self.security.hash_password(password)
         user = Users(username=username, 
                     password=hashed_password, 
-                    phone_number=phone_number,
+                    phone_number=str(self.security.encrypt(data=phone_number)),
                     role="user")
-            
+   
         self.session.add(user)
         await self.session.commit()
-            
+        users = await self.session.execute(select(Users))
+        for user in users.scalars():
+            print(f"User: {user.username}, Phone: {user.phone_number}")
         return "Okey!"
 
     async def login_user(self, username: str, password: str, phone_number: str, response: Response):
         query = (
             select(Users)
-            .filter(Users.username == username, Users.phone_number == phone_number)
+            .filter(Users.username == username)
         )
         res = await self.session.execute(query)
         user = res.scalar_one_or_none()
-
-        if not user:
-            raise HTTPException(status_code=401, detail="Invalid credentials(username or phone_number)")
-            
-        if not self.security.verify_password(user.password, password):
-            raise HTTPException(status_code=401, detail="Invalid credentials(password)")
-
-        
-
+        is_valid = bool(user) and self.security.verify_password(user.password, password)
+        if not is_valid:
+            if not user:
+                self.security.verify_password(hashed_pwd=user.password, password=password)
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+        if self.security.decrypt(token=user.phone_number[2:-1].encode()) != phone_number:
+            raise HTTPException(status_code=422, detail="Invalid credentials")
         token = self.security.create_jwt(user_id=user.id, user_role=user.role)
         self._set_auth_cookie(response, token)
             
