@@ -3,12 +3,10 @@ from src.servies.order_service import OrdersService, get_orders_service
 from src.utils.security import auth
 from src.schemas.orders import OrderResponse
 from faststream.rabbit.fastapi import RabbitRouter
-from src.redisclient.cache import Cache 
 from src.servies.user_service import UserService, get_user_service 
 class OrderRourer:
     def __init__(self):
         self.router = RabbitRouter(tags=["Orders"])
-        self.cache = Cache()
         self._setup_routers()
         
     def _setup_routers(self):
@@ -19,19 +17,13 @@ class OrderRourer:
     async def find_orders(self, title: str
                           , token: str = Depends(auth.access_token_required),
                           order_service: OrdersService = Depends(get_orders_service)):
-        cached_order = await self.cache.get_cached_item_data(key=title)
-        if cached_order:
-            return cached_order 
         orders = await order_service.find_order(title=title, user_id=int(token.sub))
-        orders_response = [OrderResponse.model_validate(order) for order in orders]
-        await self.cache.set_cached_order_data(key=title, value=orders_response) 
-        return orders_response 
+        return orders 
     async def create_order(self, item_id: int, 
                         token: str = Depends(auth.access_token_required),
                         order_service: OrdersService = Depends(get_orders_service),
                         user_service: UserService = Depends(get_user_service)):
         order = await order_service.create_order(item_id=item_id, user_id=int(token.sub))
-        await self.cache.set_cached_order_data(key=order.title, value=[OrderResponse.model_validate(order)])
         user = await user_service.get_profile(user_id=int(token.sub))
         order_dict = {
             "id": order.id,

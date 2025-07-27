@@ -79,22 +79,6 @@ Start the FastAPI server:
 ```bash
 uvicorn src.main:app --reload
 ```
-### Authentication
-- `POST /register` - User registration
-- `POST /login` - User login
-
-### Products (Admin only)
-- `GET /search` - Product search
-- `POST /add_item` - Add product
-- `DELETE /del_item` - Delete product
-
-### Orders
-- `GET /find_orders` - Find user orders
-- `POST /create_order` - Create order
-- `DELETE /delete_order` - Delete order
-
-### User Profile
-- `GET /me` - Get user profile
 
 ## Notification Format
 

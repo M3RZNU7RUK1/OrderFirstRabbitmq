@@ -7,7 +7,7 @@ class UserResponse(BaseModel):
     role: str
     created_at: datetime
     updated_at: datetime 
-    orders: list["OrderResponse"] | None
+    orders: list["OrderResponse"]
     class Config:
         from_attributes = True 
 
