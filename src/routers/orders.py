@@ -11,7 +11,7 @@ load_dotenv()
 
 class OrderRourer:
     def __init__(self):
-        self.router = RabbitRouter(tags=["Orders"])
+        self.router = RabbitRouter(tags=["Orders"], prefix="/orders")
         self.security = Security()
         self._setup_routers()
         
@@ -49,5 +49,9 @@ class OrderRourer:
                         token: str = Depends(auth.access_token_required),
                         order_service: OrdersService = Depends(get_orders_service)
                         ):
-        order = await order_service.del_order(order_id=order_id, user_id=int(token.sub))
+        await order_service.del_order(order_id=order_id, user_id=int(token.sub))
+        await self.router.broker.publish(
+            f"Отменен заказ под номером: {order_id}",
+            queue="deletedorders"
+        )
         return {"message": "deleted"}

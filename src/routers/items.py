@@ -6,7 +6,7 @@ from src.redisclient.cache import Cache
 
 class ItemRouter:
     def __init__(self):
-        self.router = APIRouter(tags=["Items"])
+        self.router = APIRouter(tags=["Items"], prefix="/items")
         self.cache = Cache()
         self._setup_routers()
         

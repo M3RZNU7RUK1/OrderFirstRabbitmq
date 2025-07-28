@@ -4,7 +4,7 @@ from src.schemas.users import UserRegister
 
 class AuthRouter:
     def __init__(self):
-        self.router = APIRouter(tags=["Auth"])
+        self.router = APIRouter(tags=["Auth"], prefix="/auth")
         self._setup_routers()
 
     def _setup_routers(self):

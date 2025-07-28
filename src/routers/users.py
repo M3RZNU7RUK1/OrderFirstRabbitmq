@@ -5,7 +5,7 @@ from src.utils.security import auth
 
 class UserRouter:
     def __init__(self):
-        self.router = APIRouter(tags=["User"])
+        self.router = APIRouter(tags=["User"], prefix="/users")
         self._setup_routers()
 
     def _setup_routers(self):

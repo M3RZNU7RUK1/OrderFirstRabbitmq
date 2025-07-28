@@ -30,7 +30,12 @@ async def handle_orders(order_data: dict):
         text=message,
         parse_mode="Markdown"
     )
-
+@broker.subscriber("deletedorders")
+async def handle_deleted_orders(data: str):
+    await bot.send_message(
+        chat_id=1965822435,
+        text=data
+    )
 
 async def main():
     async with broker as br:
