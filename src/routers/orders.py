@@ -6,14 +6,13 @@ from faststream.rabbit.fastapi import RabbitRouter
 from src.servies.user_service import UserService, get_user_service
 from src.utils.security import Security
 from dotenv import load_dotenv
-import os 
 
 load_dotenv()
 
 class OrderRourer:
     def __init__(self):
         self.router = RabbitRouter(tags=["Orders"])
-        self.security = Security
+        self.security = Security()
         self._setup_routers()
         
     def _setup_routers(self):
@@ -32,11 +31,7 @@ class OrderRourer:
                         user_service: UserService = Depends(get_user_service)):
         order = await order_service.create_order(item_id=item_id, user_id=int(token.sub))
         user = await user_service.get_profile(user_id=int(token.sub))
-        try:
-            # Правильный вызов decrypt
-            phone_number = self.security.decrypt(user.phone_number[2:-1].encode())
-        except Exception as e:
-            phone_number = "[encrypted]":
+        phone_number = self.security.decrypt(token=user.phone_number[2:-1].encode())
 
         order_dict = {
             "id": order.id,

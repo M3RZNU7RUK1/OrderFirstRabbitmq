@@ -22,7 +22,7 @@ async def handle_orders(order_data: dict):
         f"📋 *Название:* {order_data['title']}\n"
         f"💰 *Цена:* {order_data['price']} руб.\n"
         f"⏰ *Номер телефона:* {order_data['phone_number']}\n"
-        f"📅 *Дата создания:* {order_data['created_at']}"
+        f"📅 *Дата создания заказа:* {order_data['created_at']}"
     )
     
     await bot.send_message(
