@@ -7,7 +7,7 @@ from src.routers.orders import OrderRourer
 from src.servies.user_service import UserService  
 from contextlib import asynccontextmanager 
 from src.database import session 
-
+from fastapi.middleware.cors import CORSMiddleware
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await create_db()
@@ -15,8 +15,15 @@ async def lifespan(app: FastAPI):
         user_service = UserService(sn)
         await user_service.add_admin()
     
-    yield
+    yield 
 app = FastAPI(lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 user_router = UserRouter()
 auth_router = AuthRouter()
 item_router = ItemRouter()
