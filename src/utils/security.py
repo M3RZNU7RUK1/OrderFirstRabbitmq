@@ -17,7 +17,7 @@ auth = AuthX(config=config)
 class Security:
     def __init__(self):
         self.__pwd_context = CryptContext(schemes=["argon2"])
-        self.cipher = Fernet(str(os.getenv("ENCRYPTION_KEY")))
+        self.cipher = Fernet(os.getenv("ENCRYPTION_KEY"))
 
     def encrypt(self, data: str) -> bytes:
         return self.cipher.encrypt(data.encode())
