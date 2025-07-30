@@ -40,7 +40,7 @@ FastAPI application for order management with JWT authentication, admin panel an
 Clone repository and enter directory:
 ```bash
 git clone https://github.com/GL1KK/OrderFirstRabbitmq.git
-cd your-project-folder
+cd OrderFirstRabbitmq
 ```
 Create and configure .env file:
 
@@ -71,7 +71,6 @@ docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.10.7-manage
 poetry install
 poetry env activate
 example: /home/daniil/.cache/pypoetry/virtualenvs/order-yRxfHGHV-py3.13/bin/activate
-## API Endpoints
 ```
 Running the Application
 
@@ -79,6 +78,29 @@ Start the FastAPI server:
 ```bash
 uvicorn src.main:app --reload
 ```
+<<<<<<< HEAD
+=======
+Start telegram-bot:
+```bash
+poetry run python -m src.bot.bot
+```
+### Authentication
+- `POST /register` - User registration
+- `POST /login` - User login
+
+### Products (Admin only)
+- `GET /search` - Product search
+- `POST /add_item` - Add product
+- `DELETE /del_item` - Delete product
+
+### Orders
+- `GET /find_orders` - Find user orders
+- `POST /create_order` - Create order
+- `DELETE /delete_order` - Delete order
+
+### User Profile
+- `GET /me` - Get user profile
+>>>>>>> f39f188b069d85cffbb70bed4798719d6fca0c62
 
 ## Notification Format
 

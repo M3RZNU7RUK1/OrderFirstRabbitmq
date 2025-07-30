@@ -32,7 +32,7 @@ class UserService:
 
     async def add_admin(self):
         admin = Users(username=os.getenv("USERNAME_ADMIN"), 
-                      password=self.security.hash_password(os.getenv("PASSWORD_ADMIN")),
+                      password=self.security.hash(os.getenv("PASSWORD_ADMIN")),
                       role="admin",
                       phone_number=str(self.security.encrypt(os.getenv("PHONE_NUMBER_ADMIN"))))
         self.session.add(admin)
