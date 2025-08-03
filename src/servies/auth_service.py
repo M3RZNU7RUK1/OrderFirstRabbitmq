@@ -46,50 +46,46 @@ class AuthService:
         access_token, refresh_token = self.security.create_jwt(user_id=user.id, user_role=user.role)
         user.refresh_token = self.security.hash(refresh_token)
         user.is_active = True
+        await self.session.commit()
         self._set_auth_cookie(response, access_token)
                 
         return {"access_token": access_token,
                 "refresh_token": refresh_token
                 }
     
-    async def refresh_access_token(self, refresh_token: str, response: Response):
+    async def refresh_access_token(self, user_id: int, response: Response):
         try:
-            payload = auth.verify_token(refresh_token)
-            user_id = int(payload.sub)
-        except Exception:
-            raise HTTPException(status_code=401, detail="Invalid refresh token")
-        
-        query = (
-            select(Users).
-            filter(Users.id == user_id)
-        )
-        res = await self.session.execute(query)
-        user = res.scalar_one_or_none()
-        
-        if not user or not user.refresh_token:
-            raise HTTPException(status_code=401, detail="Invalid refresh token")
-        
-        if not self.security.verify(user.refresh_token, refresh_token):
-            raise HTTPException(status_code=401, detail="Invalid refresh token")
-        
-        new_access_token, new_refresh_token = self.security.create_jwt(
-            user_id=user.id, 
-            user_role=user.role
-        )
-        
-        user.refresh_token = self.security.hash(new_refresh_token)
-        await self.session.commit()
-        
-        self._set_auth_cookie(response, new_access_token)
-        
-        return {
-            "access_token": new_access_token,
-            "refresh_token": new_refresh_token  
-        }
-
+            
+            query = (
+                select(Users).
+                filter(Users.id == user_id)
+            )
+            res = await self.session.execute(query)
+            user = res.scalar_one_or_none()
+            print(user.is_active)
+            if not user or not user.refresh_token:
+                raise HTTPException(status_code=401, detail="Invalid refresh token")
+            
+            new_access_token, new_refresh_token = self.security.create_jwt(
+                user_id=user.id, 
+                user_role=user.role
+            )
+            
+            user.refresh_token = self.security.hash(new_refresh_token)
+            await self.session.commit()
+            
+            self._set_auth_cookie(response, new_access_token)
+            
+            return {
+                "access_token": new_access_token,
+                "refresh_token": new_refresh_token  
+            }
+        except Exception as e:
+            raise HTTPException(status_code=401, detail=str(e))
 
     async def logout(self, user_id: int, response: Response):
         user = await self.session.get(Users, user_id)
+        print(user.is_active)
         if user:
             user.refresh_token = None
             user.is_active = False

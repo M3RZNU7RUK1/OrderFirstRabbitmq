@@ -1,3 +1,5 @@
+from fastapi import HTTPException
+import jwt
 from datetime import timedelta
 from passlib.context import CryptContext
 from dotenv import load_dotenv
@@ -21,7 +23,22 @@ class Security:
     def __init__(self):
         self.__pwd_context = CryptContext(schemes=["argon2"])
         self.cipher = Fernet(os.getenv("ENCRYPTION_KEY"))
-
+    def decode_token(self, token: bytes):
+        try:
+            unverified_header = jwt.get_unverified_header(token)
+            algorithm = unverified_header.get("alg", "HS256")
+            
+            payload = jwt.decode(
+                token,
+                key=os.getenv("JWT_SECRET_KEY"),  # Ваш секретный ключ
+                algorithms=[algorithm],
+                options={"verify_exp": True}  # Проверяем срок действия
+            )
+            return payload
+        except jwt.ExpiredSignatureError:
+            raise HTTPException(status_code=401, detail="Token expired")
+        except jwt.InvalidTokenError as e:
+            raise HTTPException(status_code=401, detail=f"Invalid token: {str(e)}")
     def encrypt(self, data: str) -> bytes:
         return self.cipher.encrypt(data.encode())
     
